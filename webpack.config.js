@@ -12,7 +12,13 @@ module.exports = {
     contentBase: path.join(__dirname, "dist")
   },
   module: {
-    rules: [{ test: /\.tsx?$/, use: "ts-loader", exclude: /node_modules/ }]
+    rules: [
+      { test: /\.tsx?$/, use: "ts-loader", exclude: /node_modules/ },
+      {
+        test: require.resolve("three"),
+        use: "imports-loader?THREE=>three"
+      }
+    ]
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"]
