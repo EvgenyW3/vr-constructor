@@ -1,7 +1,6 @@
 import * as THREE from "three";
 
 import "imports-loader?THREE=three!three/examples/js/controls/OrbitControls.js";
-import { LoadingManager } from "three";
 
 // Scene with background color
 const scene = new THREE.Scene();
@@ -13,12 +12,13 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-// Controls
-const controls = new THREE.OrbitControls(camera);
+camera.position.set(0, 5, 5);
 // Renderer
 const renderer = new THREE.WebGLRenderer();
 // Shadow support
 renderer.shadowMap.enabled = true;
+// Controls
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
 // Setting size and adding renderer(canvas) to a document
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -30,19 +30,34 @@ window.addEventListener("resize", function() {
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
 });
-// Geometry
-const geometry = new THREE.BoxGeometry(2, 2, 2);
+// Box Geometry
+const BoxGeometry = new THREE.BoxGeometry(2, 2, 2);
 // Texture
 const texture = new THREE.TextureLoader().load("wood-texture-box-4.jpg");
 // Material
-const material = new THREE.MeshPhongMaterial({ map: texture });
+const CubeMaterial = new THREE.MeshPhongMaterial({ map: texture });
 // Creating cube
-const cube = new THREE.Mesh(geometry, material);
-cube.position.y += 1;
+const cube = new THREE.Mesh(BoxGeometry, CubeMaterial);
+
 cube.receiveShadow = true;
 cube.castShadow = true;
 
 scene.add(cube);
+
+// Sphere geometry
+const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
+const sphereMaterial = new THREE.MeshPhongMaterial({
+  color: 0xffff00,
+  wireframe: true
+});
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
+sphere.position.x = -3;
+sphere.receiveShadow = true;
+sphere.castShadow = true;
+
+scene.add(sphere);
+
 // Creating floor
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(20, 20, 10, 10),
@@ -67,16 +82,15 @@ light.shadow.camera.far = 25;
 
 scene.add(light);
 
-camera.position.set(0, 10, 5);
-
 function animate() {
   requestAnimationFrame(animate);
 
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
 
-  controls.update();
+  sphere.rotation.y += 0.008;
 
+  controls.update();
   renderer.render(scene, camera);
 }
 animate();
