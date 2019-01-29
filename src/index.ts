@@ -1,7 +1,10 @@
 import * as THREE from "three";
 
 import "imports-loader?THREE=three!three/examples/js/controls/OrbitControls.js";
-
+import "imports-loader?THREE=three!three/examples/js/loaders/MTLLoader.js";
+import "imports-loader?THREE=three!three/examples/js/loaders/LoaderSupport.js";
+import "imports-loader?THREE=three!three/examples/js/loaders/OBJLoader.js";
+import { PositionalAudio } from "three";
 // Scene with background color
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x132533);
@@ -58,6 +61,24 @@ sphere.castShadow = true;
 
 scene.add(sphere);
 
+// function called on successful load
+const callbackOnLoad = function(object) {
+  object.position.set(-1, -1, 2);
+  scene.add(object);
+};
+
+// instantiate MTL loader
+const mtlLoader = new THREE.MTLLoader();
+
+mtlLoader.load("chair-obj/chair.mtl", function(materials) {
+  materials.preload();
+  // instantiate Obj loader
+  const objLoader = new THREE.OBJLoader();
+  objLoader.setMaterials(materials);
+  //objLoader.setMaterials(materials);
+  objLoader.load("chair-obj/chair.obj", callbackOnLoad);
+});
+
 // Creating floor
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(20, 20, 10, 10),
@@ -91,6 +112,7 @@ function animate() {
   sphere.rotation.y += 0.008;
 
   controls.update();
+
   renderer.render(scene, camera);
 }
 animate();
