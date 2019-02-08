@@ -4,10 +4,17 @@ import "imports-loader?THREE=three!three/examples/js/controls/OrbitControls.js";
 import "imports-loader?THREE=three!three/examples/js/loaders/MTLLoader.js";
 import "imports-loader?THREE=three!three/examples/js/loaders/LoaderSupport.js";
 import "imports-loader?THREE=three!three/examples/js/loaders/OBJLoader.js";
-import { PositionalAudio } from "three";
+
+import Api from "./api/Api";
+
 // Scene with background color
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x132533);
+//const scene = new THREE.Scene();
+//scene.background = new THREE.Color(0x132533);
+
+var api = new Api();
+
+var scene = api.CreateScene(0x132533);
+
 // Camera
 const camera = new THREE.PerspectiveCamera(
   75,
